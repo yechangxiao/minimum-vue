@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    hello
+  </div>
+  <script>
+    let data = {
+      msg: 'hello',
+      count: 10
+    }
+    let vm = {}
+    proxyData(data)
+    function proxyData(data) {
+      Object.keys(data).forEach(key => {
+        Object.defineProperty(vm, key, {
+          configurable: true,
+          enumerable: true,
+          get() {
+            console.log('get: ', data[key])
+            return data[key]
+          },
+          set(newValue) {
+            console.log('set: ', newValue)
+            if (newValue === data[key]) {
+              return
+            }
+            data[key] = newValue
+            document.getElementById('app').textContent = data[key]
+          }
+        })
+      })
+    }
+    vm.msg = 'hello world'
+    console.log('vm.msg', vm.msg)
+  </script>
+</body>
+</html>
