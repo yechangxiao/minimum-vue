@@ -6,13 +6,14 @@ class Vue {
       ? document.querySelector(options.el)
       : options.el
     this._proxyData(this.$data)
+    new Observer(this.$data)
   }
   _proxyData(data) {
     Object.keys(data).forEach(key => {
       Object.defineProperty(this, key, {
         configurable: true,
         enumerable: true,
-        get() {
+        get() {          
           return data[key]
         },
         set(newValue) {

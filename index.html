@@ -24,14 +24,18 @@
   </div>
 </body>
 
+<script src="./js/observer.js"></script>
 <script src="./js/vue.js"></script>
 <script>
   let vm = new Vue({
     el: '#app',
     data: {
       msg: 'hello world',
-      count: 10
+      count: 10,
+      person: { name: 'zs' }
     }
   })
+  console.log('vm', vm)
+  vm.msg = { test: 'hello' }
 </script>
 </html>
