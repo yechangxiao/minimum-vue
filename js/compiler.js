@@ -31,15 +31,25 @@ class Compiler {
   }
   update(node, key, attrName) {
     let updateFn = this[attrName + 'Updater']
-    updateFn && updateFn(node, this.vm[key])
+    updateFn && updateFn.call(this, node, this.vm[key], key)
   }
   // 处理v-text指令
-  textUpdater(node, value) {
+  textUpdater(node, value, key) {
     node.textContent = value
+    new Watcher(this.vm, key, (newValue) => {
+      node.textContent = newValue
+    })
   }
   // 处理v-model
-  modelUpdater(node, value) {
+  modelUpdater(node, value, key) {
     node.value = value
+    new Watcher(this.vm, key, (newValue) => {
+      node.value = newValue
+    })
+    // 双向绑定
+    node.addEventListener('input', () => {
+      this.vm[key] = node.value
+    })
   }
   compilerText(node) {
     // console.dir(node)
@@ -48,6 +58,11 @@ class Compiler {
     if (reg.test(value)) {
       const key = RegExp.$1.trim()
       node.textContent = value.replace(reg, this.vm[key])
+
+      // 创建watcher对象，当数据变化更新视图
+      new Watcher(this.vm, key, (newValue) => {
+        node.textContent = newValue
+      })
     }
   }
   isDirective(attrName) {

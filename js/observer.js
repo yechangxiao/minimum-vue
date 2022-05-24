@@ -22,6 +22,7 @@ class Observer {
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: true,
+      // 这里只是定义了set和get，并没有执行
       get() {
         // 收集依赖
         Dep.target && dep.addSub(Dep.target)
