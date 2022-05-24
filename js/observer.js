@@ -15,12 +15,16 @@ class Observer {
   // 因为get函数形成闭包，关联了val，扩展了val的作用域
   defineReactive(obj, key, val) {
     const that = this
+    // 负责收集依赖，并发送通知
+    let dep = new Dep()
     // 如果val是对象，把val内部的属性转换为响应式数据
     this.walk(val)
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: true,
       get() {
+        // 收集依赖
+        Dep.target && dep.addSub(Dep.target)
         return val
       },
       set(newVal) {
@@ -31,6 +35,7 @@ class Observer {
         // 如果设置的属性为对象，转换为响应式数据
         that.walk(newVal)
         // 发送通知
+        dep.notify()
       }
     })
   }
